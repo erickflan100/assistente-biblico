@@ -155,6 +155,28 @@ export default function Home() {
     setShowConsent(false);
   };
 
+  const buttonStyle = {
+    color: "#ffffff",
+    backgroundColor: "#28a745",
+    fontSize: "13px",
+    padding: "10px 20px",
+    borderRadius: "5px",
+    border: "none",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
+  };
+
+  const declineButtonStyle = {
+    color: "#ffffff",
+    backgroundColor: "#dc354560",
+    fontSize: "13px",
+    padding: "10px 20px",
+    borderRadius: "5px",
+    border: "none",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
+  };
+
   // if (!showConsent) return null;
 
   return (
@@ -209,9 +231,9 @@ export default function Home() {
           buttonText="Aceitar"
           declineButtonText="Cancelar"
           cookieName="meu-consentimento"
-          style={{ background: "#2B373B" }}
-          buttonStyle={{ color: "#4e503b", fontSize: "13px" }}
-          declineButtonStyle={{ color: "#4e503b", fontSize: "13px" }}
+          style={{ background: "#2b373b" }}
+          buttonStyle={ buttonStyle }
+          declineButtonStyle={ declineButtonStyle }
           enableDeclineButton
           onAccept={handleAccept}
           onDecline={handleDecline}
