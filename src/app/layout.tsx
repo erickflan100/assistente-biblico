@@ -1,5 +1,9 @@
+"use-client";
+
 import type { Metadata } from "next";
+import Script from "next/script";
 import localFont from "next/font/local";
+import Adsense from "./components/adsense";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -24,7 +28,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-br">
+      <head>
+        <Adsense />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

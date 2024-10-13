@@ -5,6 +5,8 @@ import { MdDarkMode } from "react-icons/md";
 import { IoMdSunny } from "react-icons/io";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { DisplayAdUnit } from "./components/adUnit";
+import CookieConsent from "react-cookie-consent";
 
 enum Sender {
   USER = "user",
@@ -17,7 +19,7 @@ export default function Home() {
   const [firstLoad, setFirstLoad] = useState(false);
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<
-  Array<{ text: string; sender: "user" | "ia" }>
+    Array<{ text: string; sender: "user" | "ia" }>
   >([]);
   const controllerRef = useRef(new AbortController());
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -44,7 +46,7 @@ export default function Home() {
 
   const response = async () => {
     if (text.trim() === "") return;
-    
+
     setFirstLoad(true);
 
     controllerRef.current = new AbortController();
@@ -67,8 +69,7 @@ export default function Home() {
       "o texto original da bíblia e sua tradução para melhor compreensão do texto e os comentários de Matthew Henry e Charles Spurgeon, se caso existir uma pergunta que não esteja relacionado ";
     prompt +=
       "com a biblia, responda que a pergunta não pode ser respondida, pois não está relacionada com a bíblia e não ";
-    prompt +=
-      "cite o Matthew Henry e nem o Charles Spurgeon. Se a pergunta ";
+    prompt += "cite o Matthew Henry e nem o Charles Spurgeon. Se a pergunta ";
     prompt +=
       "estiver relacionando outro comentarista da biblia, responda que a pergunta não pode ser respondida, pois ";
     prompt +=
@@ -87,7 +88,6 @@ export default function Home() {
       // Adicionar mensagem da IA
       const iaMessage = { text: response, sender: Sender.IA };
       setMessages((prevMessages) => [...prevMessages, iaMessage]);
-
     } catch (error: string | any) {
       if (error.name === "AbortError") {
         console.log("Request was aborted");
@@ -127,9 +127,19 @@ export default function Home() {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col justify-between items-center ${darkMode ? "bg-black text-white" : "bg-white text-black"}`}>
+    <div
+      className={`min-h-screen flex flex-col justify-between items-center ${
+        darkMode ? "bg-black text-white" : "bg-white text-black"
+      }`}
+    >
       {/* Cabeçalho */}
-      <header className={`broder border-b w-full flex justify-between items-center p-4 ${darkMode ? "bg-black_theme text-white border-white_theme" : "bg-white_theme text-black border-black_theme"}`}>
+      <header
+        className={`broder border-b w-full flex justify-between items-center p-4 ${
+          darkMode
+            ? "bg-black_theme text-white border-white_theme"
+            : "bg-white_theme text-black border-black_theme"
+        }`}
+      >
         <h1 className="text-lg font-bold">Assistente Bíblico</h1>
         <nav className="flex gap-4 items-center">
           {/* <a href="#" className="hover:underline">
@@ -141,28 +151,55 @@ export default function Home() {
           {/* Botão para alternar o tema */}
           <button
             onClick={toggleTheme}
-            className={`border border-gray-300 w-32 px-2 py-2 flex justify-center gap-2 items-center rounded-lg transition-colors ${darkMode ? "bg-black text-white hover:bg-white_hover" : "bg-white_theme text-black hover:bg-black_hover"}`}
+            className={`border border-gray-300 w-32 px-2 py-2 flex justify-center gap-2 items-center rounded-lg transition-colors ${
+              darkMode
+                ? "bg-black text-white hover:bg-white_hover"
+                : "bg-white_theme text-black hover:bg-black_hover"
+            }`}
           >
-            {darkMode ? <MdDarkMode size={20} color="white"/> : <IoMdSunny size={20} color="black"/>}
-            {darkMode ? <div className="text-sm">Tema Escuro</div> : <div className="text-sm">Tema Claro</div>}
+            {darkMode ? (
+              <MdDarkMode size={20} color="white" />
+            ) : (
+              <IoMdSunny size={20} color="black" />
+            )}
+            {darkMode ? (
+              <div className="text-sm">Tema Escuro</div>
+            ) : (
+              <div className="text-sm">Tema Claro</div>
+            )}
           </button>
         </nav>
       </header>
 
       {/* Área do Chat */}
-      <main className="flex-1 w-full flex flex-col items-center justify-center p-4">
-        <div className="w-full max-w-3xl flex flex-col items-center">
-          <div className={`border border-gray-400 w-full h-[60vh] ${darkMode ? "bg-black text-white" : "bg-white text-black"} rounded-lg p-4 overflow-y-scroll`}>
+      <main className="flex-1 w-full flex flex-row items-center justify-center p-4">
+        <CookieConsent
+          location="bottom"
+          buttonText="Aceitar"
+          cookieName="meu-consentimento"
+          style={{ background: "#2B373B" }}
+          buttonStyle={{ color: "#4e503b", fontSize: "13px" }}
+        >
+          Este site usa cookies para melhorar sua experiência.{" "}
+        </CookieConsent>
+        <div className="w-4/5 w-40 h-full mx-auto p-2 rounded-lg bg-white">
+          <DisplayAdUnit
+            className="w-4/5 w-40 h-full mx-auto p-2 rounded-lg shadow-md bg-black"
+            format="vertical"
+          />
+        </div>
+        <div className="w-full h-full max-w-3xl flex flex-col items-center">
+          <div
+            className={`border border-gray-400 w-full h-[60vh] ${
+              darkMode ? "bg-black text-white" : "bg-white text-black"
+            } rounded-lg p-4 overflow-y-scroll`}
+          >
             {messages.map((message, index) => (
               <div key={index}>
                 {message.sender === "user" ? (
-                  <div className="text-right mb-4">
-                    {message.text}
-                  </div>
+                  <div className="text-right mb-4">{message.text}</div>
                 ) : (
-                  <div className="text-left mb-4">
-                    {message.text}
-                  </div>
+                  <div className="text-left mb-4">{message.text}</div>
                 )}
               </div>
             ))}
@@ -183,20 +220,41 @@ export default function Home() {
             <input
               type="text"
               placeholder="Digite sua pergunta..."
-              className={`flex-1 border border-gray-400 p-2 rounded-l-lg ${darkMode ? "bg-black text-white" : "bg-white text-black"}`}
+              className={`flex-1 border border-gray-400 p-2 rounded-l-lg ${
+                darkMode ? "bg-black text-white" : "bg-white text-black"
+              }`}
               value={text}
               onChange={(e) => setText(e.target.value)}
               onKeyDown={handleKeyDown}
             />
-            <button onClick={handleResponse} className={`border border-gray-400 p-2 px-4 rounded-r-lg ${darkMode ? "bg-white text-black hover:bg-black_hover hover:text-white" : "bg-black text-white hover:bg-white_hover hover:text-black"}`}>
+            <button
+              onClick={handleResponse}
+              className={`border border-gray-400 p-2 px-4 rounded-r-lg ${
+                darkMode
+                  ? "bg-white text-black hover:bg-black_hover hover:text-white"
+                  : "bg-black text-white hover:bg-white_hover hover:text-black"
+              }`}
+            >
               Enviar
             </button>
           </div>
         </div>
+        <div className="w-4/5 w-40 h-full mx-auto p-2 rounded-lg bg-white">
+          <DisplayAdUnit
+            className="w-4/5 w-40 h-full mx-auto p-2 rounded-lg shadow-md bg-black"
+            format="vertical"
+          />
+        </div>
       </main>
 
       {/* Rodapé */}
-      <footer className={`border border-t w-full flex justify-center p-4 ${darkMode ? "bg-black_theme text-white border-white_theme" : "bg-white_theme text-black border-black_theme"}`}>
+      <footer
+        className={`border border-t w-full flex justify-center p-4 ${
+          darkMode
+            ? "bg-black_theme text-white border-white_theme"
+            : "bg-white_theme text-black border-black_theme"
+        }`}
+      >
         <p>© 2024 Assistente Bíblico</p>
       </footer>
     </div>
