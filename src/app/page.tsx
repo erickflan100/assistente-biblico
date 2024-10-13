@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import { MdDarkMode } from "react-icons/md";
+import { IoMdSunny } from "react-icons/io";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 enum Sender {
   USER = "user",
@@ -18,10 +20,21 @@ export default function Home() {
   Array<{ text: string; sender: "user" | "ia" }>
   >([]);
   const controllerRef = useRef(new AbortController());
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const handleResponse = () => {
     response();
   };
+
+  // Função para rolar o chat até o final
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Efeito que rola o chat para o final sempre que as mensagens mudam
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const genAI = new GoogleGenerativeAI(
     "AIzaSyCcwpx2CpqpLe7NK2oj3ZEPeiyqW7sS48I"
@@ -106,24 +119,31 @@ export default function Home() {
     }
   };
 
+  //Função que verifica se é o enter pressionado
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleResponse();
+    }
+  };
+
   return (
     <div className={`min-h-screen flex flex-col justify-between items-center ${darkMode ? "bg-black text-white" : "bg-white text-black"}`}>
       {/* Cabeçalho */}
       <header className={`broder border-b w-full flex justify-between items-center p-4 ${darkMode ? "bg-black_theme text-white border-white_theme" : "bg-white_theme text-black border-black_theme"}`}>
         <h1 className="text-lg font-bold">Assistente Bíblico</h1>
         <nav className="flex gap-4 items-center">
-          <a href="#" className="hover:underline">
+          {/* <a href="#" className="hover:underline">
             Início
           </a>
           <a href="#" className="hover:underline">
             Sobre
-          </a>
+          </a> */}
           {/* Botão para alternar o tema */}
           <button
             onClick={toggleTheme}
             className={`border border-gray-300 w-32 px-2 py-2 flex justify-center gap-2 items-center rounded-lg transition-colors ${darkMode ? "bg-black text-white hover:bg-white_hover" : "bg-white_theme text-black hover:bg-black_hover"}`}
           >
-            {darkMode ? <MdDarkMode size={20} color="white"/> : <MdDarkMode size={20} color="black"/>}
+            {darkMode ? <MdDarkMode size={20} color="white"/> : <IoMdSunny size={20} color="black"/>}
             {darkMode ? <div className="text-sm">Tema Escuro</div> : <div className="text-sm">Tema Claro</div>}
           </button>
         </nav>
@@ -146,6 +166,18 @@ export default function Home() {
                 )}
               </div>
             ))}
+            {loading && (
+              <div className="flex justify-center items-center mt-4">
+                <AiOutlineLoading3Quarters
+                  className="animate-spin text-3xl"
+                  color={darkMode ? "white" : "black"}
+                />
+                <span className="ml-2">
+                  {darkMode ? "Carregando..." : "Carregando..."}
+                </span>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
           <div className="flex w-full mt-4">
             <input
@@ -154,6 +186,7 @@ export default function Home() {
               className={`flex-1 border border-gray-400 p-2 rounded-l-lg ${darkMode ? "bg-black text-white" : "bg-white text-black"}`}
               value={text}
               onChange={(e) => setText(e.target.value)}
+              onKeyDown={handleKeyDown}
             />
             <button onClick={handleResponse} className={`border border-gray-400 p-2 px-4 rounded-r-lg ${darkMode ? "bg-white text-black hover:bg-black_hover hover:text-white" : "bg-black text-white hover:bg-white_hover hover:text-black"}`}>
               Enviar
