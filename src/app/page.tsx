@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { MdDarkMode } from "react-icons/md";
 import { IoMdSunny } from "react-icons/io";
+import Cookies from 'js-cookie';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { DisplayAdUnit } from "./components/adUnit";
@@ -23,6 +24,27 @@ export default function Home() {
   >([]);
   const controllerRef = useRef(new AbortController());
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [showConsent, setShowConsent] = useState(true);
+
+  useEffect(() => {
+    // Verifica se o consentimento já foi dado
+    const consent = Cookies.get("meu-consentimento");
+    if (consent === "true") {
+      setShowConsent(false);
+    }
+  }, []);
+
+  const handleAccept = () => {
+    // Grava o cookie de consentimento
+    Cookies.set("meu-consentimento", "true", { expires: 365 }); // expira em 1 ano
+
+    // Aqui você pode gravar outros cookies necessários
+    Cookies.set("cookie-funcional", "true", { expires: 365 });
+    Cookies.set("cookie-analitico", "true", { expires: 365 });
+
+    console.log("Cookies aceitos e gravados!");
+    setShowConsent(false);
+  };
 
   const handleResponse = () => {
     response();
@@ -126,6 +148,15 @@ export default function Home() {
     }
   };
 
+  const handleDecline = () => {
+    // Grava o cookie de consentimento como falso
+    Cookies.set("meu-consentimento", "false", { expires: 365 });
+    console.log("Cookies recusados!");
+    setShowConsent(false);
+  };
+
+  // if (!showConsent) return null;
+
   return (
     <div
       className={`min-h-screen flex flex-col justify-between items-center ${
@@ -176,11 +207,20 @@ export default function Home() {
         <CookieConsent
           location="bottom"
           buttonText="Aceitar"
+          declineButtonText="Cancelar"
           cookieName="meu-consentimento"
           style={{ background: "#2B373B" }}
           buttonStyle={{ color: "#4e503b", fontSize: "13px" }}
+          declineButtonStyle={{ color: "#4e503b", fontSize: "13px" }}
+          enableDeclineButton
+          onAccept={handleAccept}
+          onDecline={handleDecline}
         >
           Este site usa cookies para melhorar sua experiência.{" "}
+          <span style={{ fontSize: "10px" }}>
+            Saiba mais sobre nossa{" "}
+            <a href="/politica-de-privacidade">política de privacidade</a>.
+          </span>
         </CookieConsent>
         <div
           className={`md:w-40 w-full h-full mb-4 mx-4 ${
