@@ -172,7 +172,7 @@ export default function Home() {
       </header>
 
       {/* Área do Chat */}
-      <main className="flex-1 w-full flex flex-row items-center justify-center p-4">
+      <main className="flex-1 w-full flex flex-col md:flex-row items-center justify-center p-4">
         <CookieConsent
           location="bottom"
           buttonText="Aceitar"
@@ -182,9 +182,9 @@ export default function Home() {
         >
           Este site usa cookies para melhorar sua experiência.{" "}
         </CookieConsent>
-        <div className="w-4/5 w-40 h-full mx-auto p-2 rounded-lg bg-white">
+        <div className="md:w-40 w-full h-full mb-4 mx-4 bg-white">
           <DisplayAdUnit
-            className="w-4/5 w-40 h-full mx-auto p-2 rounded-lg shadow-md bg-black"
+            className="w-full h-full p-2 rounded-lg shadow-md"
             format="vertical"
           />
         </div>
@@ -239,9 +239,9 @@ export default function Home() {
             </button>
           </div>
         </div>
-        <div className="w-4/5 w-40 h-full mx-auto p-2 rounded-lg bg-white">
+        <div className="md:w-40 w-full h-full mt-4 mx-4 bg-white">
           <DisplayAdUnit
-            className="w-4/5 w-40 h-full mx-auto p-2 rounded-lg shadow-md bg-black"
+            className="w-full h-full p-2 rounded-lg shadow-md"
             format="vertical"
           />
         </div>
