@@ -182,7 +182,11 @@ export default function Home() {
         >
           Este site usa cookies para melhorar sua experiência.{" "}
         </CookieConsent>
-        <div className="md:w-40 w-full h-full mb-4 mx-4 bg-white">
+        <div
+          className={`md:w-40 w-full h-full mt-4 mx-4 ${
+            darkMode ? "bg-black" : "bg-white"
+          }`}
+        >
           <DisplayAdUnit
             className="w-full h-full p-2 rounded-lg shadow-md"
             format="vertical"
@@ -239,7 +243,11 @@ export default function Home() {
             </button>
           </div>
         </div>
-        <div className="md:w-40 w-full h-full mt-4 mx-4 bg-white">
+        <div
+          className={`md:w-40 w-full h-full mt-4 mx-4 ${
+            darkMode ? "bg-black" : "bg-white"
+          }`}
+        >
           <DisplayAdUnit
             className="w-full h-full p-2 rounded-lg shadow-md"
             format="vertical"
